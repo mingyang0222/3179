@@ -16,42 +16,46 @@
       "projection": {"type": "equalEarth"},
       "layer": [
         {
-          // Base world map background
+          // Oceans
           "data": {
-            "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/3_choropleth_map/js/ne_110m_admin_0_countries.topojson",
+            "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/7_others/oceans.topojson",
+            "format": {"type": "topojson", "feature": "oceans"}
+          },
+          "mark": {"type": "geoshape", "fill": "skyblue"}
+        },
+        {
+          // All countries base layer (light gray)
+          "data": {
+            "url": "ne_110m_admin_0_countries.topojson",
             "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}
           },
           "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
         },
         {
-          // Choropleth layer for FIFA winners
+          // FIFA winners overlay
           "data": {
-            "url": "fifa_winners.csv"
+            "url": "ne_110m_admin_0_countries.topojson",
+            "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}
           },
           "transform": [
             {
-              "lookup": "Country",
+              "lookup": "properties.NAME",
               "from": {
-                "data": {
-                  "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/3_choropleth_map/js/ne_110m_admin_0_countries.topojson",
-                  "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}
-                },
-                "key": "properties.NAME",
-                "fields": ["type", "properties", "geometry"]
-              },
-              "as": "geo"
+                "data": {"url": "fifa_winners.csv"},
+                "key": "Country",
+                "fields": ["Number_of_Wins"]
+              }
             }
           ],
           "mark": {"type": "geoshape", "stroke": "white"},
           "encoding": {
-            "shape": {"field": "geo", "type": "geojson"},
             "color": {
               "field": "Number_of_Wins",
               "type": "quantitative",
               "scale": {"scheme": "goldgreen"}
             },
             "tooltip": [
-              {"field": "Country", "title": "Country"},
+              {"field": "properties.NAME", "title": "Country"},
               {"field": "Number_of_Wins", "title": "World Cup Wins"}
             ]
           }

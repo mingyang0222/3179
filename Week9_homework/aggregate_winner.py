@@ -2,6 +2,11 @@ import pandas as pd
 
 df = pd.read_csv("WorldCups.csv")
 
+df['Winner'] = df['Winner'].replace({
+    'Germany FR': 'Germany',
+    'England': 'United Kingdom'
+})
+
 winners_count = df['Winner'].value_counts().reset_index()
 
 winners_count.columns = ['Country', 'Number_of_Wins']
