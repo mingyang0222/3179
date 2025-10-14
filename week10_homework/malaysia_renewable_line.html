@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Malaysia Renewables (%) — 1965–2024</title>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    const spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "title": "Malaysia — Renewables (% equivalent primary energy) (1965–2024)",
+      "width": 900,
+      "height": 500,
+      "data": {
+        "url": "Malaysia_renewable.csv",
+        "format": {"type": "csv"}
+      },
+      "mark": {"type": "line", "point": true, "interpolate": "monotone"},
+      "encoding": {
+        "x": {
+          "field": "Year",
+          "type": "quantitative",
+          "axis": {"title": "Year"}
+        },
+        "y": {
+          "field": "Renewables (% equivalent primary energy)",
+          "type": "quantitative",
+          "axis": {"title": "Renewables (%)"}
+        },
+        "tooltip": [
+          {"field": "Year", "title": "Year"},
+          {"field": "Renewables (% equivalent primary energy)", "title": "Renewables (%)", "format": ".2f"}
+        ]
+      }
+    };
+
+    vegaEmbed("#vis", spec, {mode: "vega-lite"}).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>
