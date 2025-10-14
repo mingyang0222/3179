@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Top 10 Countries with Highest Average PM2.5</title>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      margin: 30px;
+      text-align: center;
+    }
+    #vis {
+      max-width: 800px;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <h2>Top 10 Countries with the Highest Average PM2.5 (µg/m³)</h2>
+  <div id="vis"></div>
+
+  <script>
+    const spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "width": 700,
+      "height": 400,
+      "data": { "url": "pm25_top10.csv", "format": {"type": "csv"} },
+      "transform": [
+        {"calculate": "datum.avg_PM25", "as": "Average_PM25"},
+        {"window": [{"op": "rank", "as": "Rank"}], "sort": [{"field": "Average_PM25", "order": "descending"}]}
+      ],
+      "mark": {
+        "type": "bar",
+        "tooltip": true,
+        "cornerRadiusTopLeft": 4,
+        "cornerRadiusTopRight": 4,
+        "color": "#1f77b4"  <!-- single color -->
+      },
+      "encoding": {
+        "y": {
+          "field": "Country",
+          "type": "nominal",
+          "sort": "-x",
+          "axis": {"title": "Country"}
+        },
+        "x": {
+          "field": "Average_PM25",
+          "type": "quantitative",
+          "axis": {"title": "Average PM2.5 (µg/m³)"}
+        },
+        "tooltip": [
+          {"field": "Country", "title": "Country"},
+          {"field": "Average_PM25", "title": "Avg PM2.5 (µg/m³)", "format": ".2f"}
+        ]
+      },
+      "config": {
+        "axis": {"labelFontSize": 12, "titleFontSize": 13},
+        "bar": {"size": 25}
+      }
+    };
+
+    vegaEmbed("#vis", spec, {mode: "vega-lite"}).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>

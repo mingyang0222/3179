@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Deaths from Air Pollution — World vs Malaysia</title>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin: 20px; text-align: center; }
+    .vis { max-width: 900px; margin: 0 auto 40px auto; }
+    h2 { margin-bottom: 6px; }
+    p.subtitle { margin-top:0; color:#555; }
+  </style>
+</head>
+<body>
+  <div class="vis">
+    <h2>Deaths from Air Pollution — World vs Malaysia</h2>
+    <p class="subtitle">Age-standardized death rates (per 100,000) — compare global trend vs Malaysia</p>
+    <div id="vis-chart"></div>
+  </div>
+
+  <script>
+    const spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "width": 900,
+      "height": 420,
+      "data": {
+        "url": "deaths_airpollution_world_malaysia.csv",
+        "format": {"type": "csv"}
+      },
+      "transform": [
+        // create a string version of Year for tooltip display
+        {"calculate": "toString(datum.Year)", "as": "Year_str"}
+      ],
+      "layer": [
+        {
+          // lines
+          "mark": {"type": "line", "interpolate": "monotone"},
+          "encoding": {
+            "x": {
+              "field": "Year",
+              "type": "temporal",
+              "timeUnit": "year",
+              "axis": {"title": "Year"}
+            },
+            "y": {
+              "field": "DeathRate",
+              "type": "quantitative",
+              "axis": {"title": "Age-standardized death rate (per 100,000)"}
+            },
+            "color": {
+              "field": "Entity",
+              "type": "nominal",
+              "title": ""
+            }
+          }
+        },
+        {
+          // points for each year, to make hover easier
+          "mark": {"type": "point", "filled": true, "size": 60},
+          "encoding": {
+            "x": {"field": "Year", "type": "temporal", "timeUnit": "year"},
+            "y": {"field": "DeathRate", "type": "quantitative"},
+            "color": {"field": "Entity", "type": "nominal"},
+            "tooltip": [
+              {"field": "Entity", "title": "Entity"},
+              {"field": "Year_str", "title": "Year"},
+              {"field": "DeathRate", "title": "Death rate (per 100,000)", "format": ".2f"}
+            ]
+          }
+        }
+      ],
+      "resolve": {"scale": {"color": "independent"}},
+      "config": {
+        "legend": {"orient": "top"},
+        "axis": {"labelFontSize": 12, "titleFontSize": 13}
+      }
+    };
+
+    vegaEmbed("#vis-chart", spec, {mode: "vega-lite"}).then(console.log).catch(console.error);
+  </script>
+</body>
+</html>

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8" />
+  <title>Average PM2.5 by Country</title>
   <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.8"></script>
@@ -10,7 +12,7 @@
   <script>
     const spec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "title": "Renewables (% equivalent primary energy) by Country — 2022",
+      "title": "Average PM2.5 (µg/m³) by Country",
       "width": 900,
       "height": 500,
       "projection": {"type": "equalEarth"},
@@ -36,29 +38,29 @@
           },
           "transform": [
             {
-              "lookup": "properties.ISO_A3",
+              "lookup": "properties.NAME",
               "from": {
                 "data": {
-                  // local CSV in same folder as this HTML:
-                  "url": "renewables_2022.csv",
+                  // local CSV must be in same folder as HTML
+                  "url": "pm25_avg_by_country.csv",
                   "format": {"type": "csv"}
                 },
-                "key": "Code",
-                "fields": ["Renewables (% equivalent primary energy)"]
+                "key": "Country",
+                "fields": ["avg_PM25"]
               }
             }
           ],
           "mark": {"type": "geoshape", "stroke": "white"},
           "encoding": {
             "color": {
-              "field": "Renewables (% equivalent primary energy)",
+              "field": "avg_PM25",
               "type": "quantitative",
-              "scale": {"scheme": "goldgreen"},
-              "title": "Renewables (%)"
+              "scale": {"scheme": "inferno"},
+              "title": "Avg PM2.5 (µg/m³)"
             },
             "tooltip": [
               {"field": "properties.NAME", "title": "Country"},
-              {"field": "Renewables (% equivalent primary energy)", "title": "Renewables (%)"}
+              {"field": "avg_PM25", "title": "Avg PM2.5 (µg/m³)", "format": ".2f"}
             ]
           }
         }

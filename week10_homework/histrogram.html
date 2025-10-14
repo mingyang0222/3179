@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Histogram — Average PM2.5 per Country</title>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  <style>
+    body{font-family:system-ui, -apple-system, "Segoe UI", Roboto, Arial; padding:20px;}
+    #vis{max-width:900px;margin:0 auto;}
+    .controls{display:flex;gap:12px;align-items:center;justify-content:center;margin-bottom:8px;}
+    input[type="range"]{width:240px;}
+  </style>
+</head>
+<body>
+  <h2>Distribution of Average PM2.5 (µg/m³) — Countries</h2>
+
+  <div class="controls">
+    <label for="bins">Bins:</label>
+    <input id="bins" type="range" min="5" max="40" value="15" />
+    <span id="binsVal">15</span>
+    <button id="logBtn" style="margin-left:12px;">Toggle Log Y</button>
+  </div>
+
+  <div id="vis"></div>
+
+  <script>
+    // base spec uses a param for bin count and log toggle
+    const specBase = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "width": 900,
+      "height": 420,
+      "data": { "url": "pm25_avg_by_country.csv", "format": {"type":"csv"} },
+      "transform": [
+        // bin will be set dynamically by view.signal below
+      ],
+      "layer": [
+        {
+          // bars: we will set the bin param in encoding.x via view.signal
+          "mark": { "type": "bar", "tooltip": true },
+          "encoding": {
+            "x": {
+              "bin": {"maxbins": 15}, // initial; will be overridden by signal
+              "field": "avg_PM25",
+              "type": "quantitative",
+              "axis": {"title": "Average PM2.5 (µg/m³)"}
+            },
+            "y": {
+              "aggregate": "count",
+              "type": "quantitative",
+              "axis": {"title": "Number of Countries"}
+            },
+            "tooltip": [
+              {"field": "avg_PM25", "title": "Bin start", "format": ".2f"},
+              {"aggregate": "count", "title": "Count"}
+            ],
+            "color": {"value": "#1f77b4"}
+          }
+        },
+        {
+          // overlay a rule+text showing mean
+          "transform": [
+            {"aggregate": [{"op":"mean", "field":"avg_PM25", "as":"mean_pm"}]}
+          ],
+          "mark": {"type":"rule", "color":"#d62728", "strokeWidth":1.5},
+          "encoding": {"x": {"field":"mean_pm", "type":"quantitative"}}
+        },
+        {
+          "transform": [
+            {"aggregate": [{"op":"mean", "field":"avg_PM25","as":"mean_pm"}]}
+          ],
+          "mark": {"type":"text", "align":"left", "dx":5, "dy":-5, "color":"#d62728"},
+          "encoding": {
+            "x": {"field":"mean_pm","type":"quantitative"},
+            "text": {"field":"mean_pm","type":"quantitative","format":".1f"}
+          }
+        }
+      ],
+      "title": "Histogram — Average PM2.5 (µg/m³) by country"
+    };
+
+    // embed and capture view
+    vegaEmbed("#vis", specBase, {mode: "vega-lite"}).then(({view, spec}) => {
+      // update bin slider UI
+      const binsSlider = document.getElementById('bins');
+      const binsVal = document.getElementById('binsVal');
+      const logBtn = document.getElementById('logBtn');
+      let logY = false;
+
+      binsVal.textContent = binsSlider.value;
+
+      function updateSpecBins(nBins){
+        // set encoding.x.bin.maxbins dynamically by editing the compiled spec signals
+        // easiest approach: re-embed with new maxbins (small cost). For simplicity here we
+        // re-create the spec and re-embed.
+        const newSpec = JSON.parse(JSON.stringify(specBase));
+        newSpec.layer[0].encoding.x.bin = {"maxbins": Number(nBins)};
+        // preserve current logY state by adjusting y transform if needed
+        if (logY){
+          newSpec.layer[0].encoding.y = {
+            "aggregate":"count","type":"quantitative","axis":{"title":"Number of Countries (log scale)"}, "scale":{"type":"log","base":10}
+          };
+        } else {
+          newSpec.layer[0].encoding.y = {"aggregate":"count","type":"quantitative","axis":{"title":"Number of Countries"}};
+        }
+        vegaEmbed("#vis", newSpec, {mode:"vega-lite"}).then(({view: v}) => {
+          // rebind UI handlers to new view
+          bindHandlers(v);
+        }).catch(console.error);
+      }
+
+      function bindHandlers(currentView){
+        binsSlider.oninput = () => {
+          binsVal.textContent = binsSlider.value;
+          updateSpecBins(binsSlider.value);
+        };
+        logBtn.onclick = () => {
+          logY = !logY;
+          updateSpecBins(binsSlider.value);
+          logBtn.textContent = logY ? "Toggle Linear Y" : "Toggle Log Y";
+        };
+      }
+
+      // initial bind
+      bindHandlers(view);
+
+    }).catch(console.error);
+  </script>
+</body>
+</html>

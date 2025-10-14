@@ -2,183 +2,427 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Global & Malaysia Renewables Visualisation</title>
-  <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.8"></script>
+  <title>Global & Malaysia Renewables Visualisation — consistent sizing + legend above stacked bar</title>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
   <style>
+    :root { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: inherit; }
+
     body {
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       margin: 20px;
-      text-align: center;
+      background: #fff;
+      color: #111;
     }
-    .vis-container {
-      max-width: 1000px;
-      margin: 0 auto 60px auto;
+
+    /* page column */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 12px 60px;
+    }
+
+    .section { margin-bottom: 40px; }
+    .section-title {
+      font-size: 24px;
+      margin: 6px 0 18px;
+      font-weight: 700;
       text-align: left;
     }
-    .controls {
-      margin-bottom: 12px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      justify-content: center;
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 6px 18px rgba(20,20,20,0.04);
+      overflow: visible;
+      position: relative;
     }
+
+    .card h3 { font-size: 16px; margin-bottom: 10px; font-weight: 600; text-align: left; }
+
+    /* maps (shared size) */
+    .map-container {
+      width: 1040px;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    .map-embed {
+      width: 100%;
+      height: 500px;
+    }
+
+    /* two-column layout: total width 1040 */
+    .two-col-wrap {
+      width: 1040px;
+      max-width: 100%;
+      display: flex;
+      gap: 20px;
+      margin: 0 auto;
+      justify-content: space-between;
+      flex-wrap: nowrap;
+      align-items: stretch; /* match heights */
+    }
+
+    .col-half {
+      width: 510px;
+      min-width: 260px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* stacked bar legend area + chart (legend above chart) */
+    .stack-legend {
+      height: 60px; /* reserved area above the chart for HTML legend */
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding-left: 6px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #111;
+      margin-right: 8px;
+    }
+    .legend-swatch {
+      width: 18px;
+      height: 14px;
+      border-radius: 3px;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    /* embed area heights:
+       charts 360px plotting area, plus stack legend 60px => consistent card total height */
+    .chart-embed {
+      width: 100%;
+      height: 360px;   /* plotting area */
+    }
+
+    .controls { margin-bottom: 12px; display:flex; gap:12px; align-items:center; justify-content:flex-start; }
     label { font-size: 14px; }
-    input[type="number"] { padding: 6px 8px; font-size: 14px; width: 80px; }
-    button { padding: 6px 10px; }
-    h2 { margin-top: 10px; margin-bottom: 10px; text-align: center; }
+    input[type="number"] { padding:6px 8px; font-size:14px; width:80px; }
+    button { padding:6px 10px; }
+
+    /* make vega internals fill parent */
+    .card .vega-embed, .card svg, .card canvas, .card iframe {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+
+    /* responsive */
+    @media (max-width: 1040px) {
+      .map-container, .two-col-wrap { width: 100%; padding: 0 12px; box-sizing: border-box; }
+      .col-half { width: 100%; }
+      .map-embed { height: 420px; }
+      .chart-embed { height: 320px; }
+      .stack-legend { height: auto; margin-bottom: 8px; }
+    }
   </style>
 </head>
 <body>
+  <div class="page">
 
-  <!-- 🌍 Global Map Section -->
-  <div class="vis-container">
-    <h2>Global Renewables (% Equivalent Primary Energy) — 2022</h2>
-    <div id="mapVis"></div>
-  </div>
+    <!-- World PM2.5 map -->
+    <section class="section">
+      <div class="section-title">Average PM2.5 (µg/m³) — World Map</div>
+      <div class="map-container">
+        <div class="card">
+          <h3>World PM2.5 Map</h3>
+          <div id="pm25Vis" class="map-embed"></div>
+        </div>
+      </div>
+    </section>
 
-  <!-- 📈 Malaysia Line Chart Section -->
-  <div class="vis-container">
-    <h2>Malaysia — Renewables (% Equivalent Primary Energy) (1965–2024)</h2>
+    <!-- Top10 + Deaths -->
+    <section class="section">
+      <div class="section-title">Top 10 PM2.5 Countries & Deaths from Air Pollution</div>
+      <div class="two-col-wrap">
+        <div class="col-half">
+          <div class="card">
+            <h3>Top 10 Countries — Avg PM2.5</h3>
+            <div id="pm25Bar" class="chart-embed"></div>
+          </div>
+        </div>
 
-    <!-- Line chart controls: start + end year -->
-    <div class="controls">
-      <label for="startYear">Start year:</label>
-      <input id="startYear" type="number" min="1965" max="2024" value="1965" />
-      <label for="endYear">End year:</label>
-      <input id="endYear" type="number" min="1965" max="2024" value="2024" />
-      <button id="resetYears">Reset</button>
-    </div>
+        <div class="col-half">
+          <div class="card">
+            <h3>Deaths from Air Pollution — World vs Malaysia</h3>
+            <div id="vis-chart" class="chart-embed"></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <div id="lineVis"></div>
+    <!-- Global renewables map -->
+    <section class="section">
+      <div class="section-title">Global Renewables (% Equivalent Primary Energy) — 2022</div>
+      <div class="map-container">
+        <div class="card">
+          <h3>Global Renewables Map</h3>
+          <div id="mapVis" class="map-embed"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Malaysia + stacked composition (legend placed above stacked bar as HTML) -->
+    <section class="section">
+      <div class="section-title">Malaysia — Renewables & Global Composition</div>
+      <div class="two-col-wrap">
+        <div class="col-half">
+          <div class="card">
+            <h3>Malaysia — Renewables (% equivalent primary energy) (1965–2024)</h3>
+            <div class="controls">
+              <label for="startYear">Start:</label>
+              <input id="startYear" type="number" min="1965" max="2024" value="1965" />
+              <label for="endYear">End:</label>
+              <input id="endYear" type="number" min="1965" max="2024" value="2024" />
+              <button id="resetYears">Reset</button>
+            </div>
+            <div id="lineVis" class="chart-embed"></div>
+          </div>
+        </div>
+
+        <div class="col-half">
+          <div class="card">
+            <h3>Global Renewable Energy Composition by Type (share of renewable total)</h3>
+
+            <!-- HTML legend just above the Vega embed -->
+            <div id="stackLegend" class="stack-legend" aria-hidden="false"></div>
+
+            <div id="stackVis" class="chart-embed"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 
   <script>
-    // ====== MAP SPEC (TOP) ======
-    const mapSpec = {
+    // colors & labels for the stacked legend (must match the Vega color scale)
+    const stackLegendItems = [
+      {key: "Biomass", color: "#4f6db6"},
+      {key: "Geothermal", color: "#f49b3b"},
+      {key: "Hydro", color: "#d55f5f"},
+      {key: "Solar", color: "#6fc0b0"},
+      {key: "Wind", color: "#4aa64a"}
+    ];
+
+    // build HTML legend above the stacked bar
+    const legendContainer = document.getElementById('stackLegend');
+    stackLegendItems.forEach(item => {
+      const it = document.createElement('div');
+      it.className = 'legend-item';
+      const sw = document.createElement('span');
+      sw.className = 'legend-swatch';
+      sw.style.background = item.color;
+      it.appendChild(sw);
+      const lbl = document.createElement('span');
+      lbl.textContent = item.key;
+      it.appendChild(lbl);
+      legendContainer.appendChild(it);
+    });
+
+    // padding values used to ensure axes/legend not clipped. Smaller charts use 'smallPadding'
+    const mapPadding = { left: 30, right: 120, top: 20, bottom: 60 };
+    const smallPadding = { left: 60, right: 20, top: 20, bottom: 40 };
+
+    /* PM2.5 world map */
+    const pm25Spec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "width": 900,
+      "autosize": {"type":"fit","contains":"padding"},
+      "padding": mapPadding,
+      "width": 1040,
       "height": 500,
       "projection": {"type": "equalEarth"},
       "layer": [
         {
-          "data": {
-            "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/7_others/oceans.topojson",
-            "format": {"type": "topojson", "feature": "oceans"}
-          },
+          "data": {"url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/7_others/oceans.topojson",
+                   "format": {"type": "topojson","feature": "oceans"}},
           "mark": {"type": "geoshape", "fill": "skyblue"}
         },
         {
-          "data": {
-            "url": "ne_110m_admin_0_countries.topojson",
-            "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}
-          },
+          "data": {"url": "ne_110m_admin_0_countries.topojson",
+                   "format": {"type": "topojson","feature": "ne_110m_admin_0_countries"}},
           "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
         },
         {
-          "data": {
-            "url": "ne_110m_admin_0_countries.topojson",
-            "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}
-          },
+          "data": {"url": "ne_110m_admin_0_countries.topojson",
+                   "format": {"type": "topojson","feature": "ne_110m_admin_0_countries"}},
           "transform": [
-            {
-              "lookup": "properties.NAME",
-              "from": {
-                "data": {
-                  "url": "renewables_2022.csv",
-                  "format": {"type": "csv"}
-                },
-                "key": "Entity",
-                "fields": ["Renewables (% equivalent primary energy)"]
-              }
+            {"lookup": "properties.NAME",
+             "from": {
+               "data": { "url": "pm25_avg_by_country.csv", "format": {"type":"csv"} },
+               "key": "Country",
+               "fields": ["avg_PM25"]
+             }
             }
           ],
-          "mark": {"type": "geoshape", "stroke": "white"},
+          "mark": {"type": "geoshape","stroke":"white"},
           "encoding": {
             "color": {
-              "field": "Renewables (% equivalent primary energy)",
+              "field": "avg_PM25",
               "type": "quantitative",
-              "scale": {"scheme": "goldgreen"},
-              "title": "Renewables (%)"
+              "scale": {"scheme": "inferno"},
+              "title": "Avg PM2.5 (µg/m³)",
+              "legend": {"orient":"right"}
             },
             "tooltip": [
-              {"field": "properties.NAME", "title": "Country"},
-              {"field": "Renewables (% equivalent primary energy)", "title": "Renewables (%)"}
+              {"field": "properties.NAME","title":"Country"},
+              {"field":"avg_PM25","title":"Avg PM2.5 (µg/m³)","format":".2f"}
             ]
           }
         }
       ]
     };
 
-
-    // ====== LINE CHART SPEC (with year range filter) ======
-    const lineSpec = {
+    /* Top10 bar (left lower row) */
+    const pm25BarSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "width": 900,
-      "height": 400,
-      "params": [
-        { "name": "startYear", "value": 1965 },
-        { "name": "endYear", "value": 2024 }
+      "autosize": {"type":"fit","contains":"padding"},
+      "padding": smallPadding,
+      "width": 510,
+      "height": 360,
+      "data": {"url":"pm25_top10.csv","format":{"type":"csv"}},
+      "transform":[
+        {"window":[{"op":"rank","as":"Rank"}],"sort":[{"field":"avg_PM25","order":"descending"}]},
+        {"filter":"datum.Rank <= 10"}
       ],
-      "data": {
-        "url": "malaysia_renewable.csv",
-        "format": {"type": "csv"}
-      },
-      "transform": [
-        {
-          "filter": "datum.Year >= startYear && datum.Year <= endYear"
-        }
-      ],
-      "mark": {"type": "line", "point": true, "interpolate": "monotone"},
-      "encoding": {
-        "x": {"field": "Year", "type": "quantitative", "axis": {"title": "Year"}},
-        "y": {
-          "field": "Renewables (% equivalent primary energy)",
-          "type": "quantitative",
-          "axis": {"title": "Renewables (%)"}
-        },
-        "tooltip": [
-          {"field": "Year", "title": "Year"},
-          {"field": "Renewables (% equivalent primary energy)", "title": "Renewables (%)", "format": ".2f"}
-        ]
+      "mark":{"type":"bar","tooltip":true,"cornerRadiusTopLeft":4,"cornerRadiusTopRight":4},
+      "encoding":{
+        "y":{"field":"Country","type":"nominal","sort":"-x","axis":{"title":"Country"}},
+        "x":{"field":"avg_PM25","type":"quantitative","axis":{"title":"Average PM2.5 (µg/m³)"}},
+        "color":{"value":"#1f77b4"}
       }
     };
 
-    // Embed both charts
-    let lineView;
-    vegaEmbed("#mapVis", mapSpec, {mode: "vega-lite"}).catch(console.warn);
+    /* Deaths line (right lower row) */
+    const deathsSpec = {
+      "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+      "autosize": {"type":"fit","contains":"padding"},
+      "padding": smallPadding,
+      "width": 510,
+      "height": 360,
+      "data": {"url":"deaths_airpollution_world_malaysia.csv","format":{"type":"csv"}},
+      "transform":[{"calculate":"toString(datum.Year)","as":"Year_str"}],
+      "layer":[
+        {"mark":{"type":"line","interpolate":"monotone"},
+         "encoding":{
+           "x":{"field":"Year","type":"temporal","axis":{"title":"Year"}},
+           "y":{"field":"DeathRate","type":"quantitative","axis":{"title":"Death rate (per 100,000)"}},
+           "color":{"field":"Entity","type":"nominal","title":""}
+         }
+        },
+        {"mark":{"type":"point","filled":true,"size":30},
+         "encoding":{
+           "x":{"field":"Year","type":"temporal"},
+           "y":{"field":"DeathRate","type":"quantitative"},
+           "color":{"field":"Entity","type":"nominal"},
+           "tooltip":[{"field":"Entity","title":"Entity"},{"field":"Year_str","title":"Year"},{"field":"DeathRate","title":"Death rate (per 100,000)","format":".2f"}]
+         }
+        }
+      ],
+      "config":{"legend":{"orient":"top"}}
+    };
 
-    vegaEmbed("#lineVis", lineSpec, {mode: "vega-lite"}).then(result => {
-      lineView = result.view;
+    /* Global renewables map */
+    const mapSpec = {
+      "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+      "autosize": {"type":"fit","contains":"padding"},
+      "padding": mapPadding,
+      "width": 1040,
+      "height": 500,
+      "projection":{"type":"equalEarth"},
+      "layer":[
+        {"data":{"url":"https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/7_others/oceans.topojson","format":{"type":"topojson","feature":"oceans"}},"mark":{"type":"geoshape","fill":"skyblue"}},
+        {"data":{"url":"ne_110m_admin_0_countries.topojson","format":{"type":"topojson","feature":"ne_110m_admin_0_countries"}},"mark":{"type":"geoshape","fill":"lightgray","stroke":"white"}},
+        {"data":{"url":"ne_110m_admin_0_countries.topojson","format":{"type":"topojson","feature":"ne_110m_admin_0_countries"}},"transform":[{"lookup":"properties.ISO_A3","from":{"data":{"url":"renewables_2022.csv","format":{"type":"csv"}},"key":"Code","fields":["Renewables (% equivalent primary energy)"]}}],"mark":{"type":"geoshape","stroke":"white"},"encoding":{"color":{"field":"Renewables (% equivalent primary energy)","type":"quantitative","scale":{"scheme":"goldgreen"},"title":"Renewables (%)"},"tooltip":[{"field":"properties.NAME","title":"Country"},{"field":"Renewables (% equivalent primary energy)","title":"Renewables (%)"}]}}
+      ]
+    };
 
-      const s = document.getElementById('startYear');
-      const e = document.getElementById('endYear');
-      const resetBtn = document.getElementById('resetYears');
-
-      function updateYears() {
-        let sVal = parseInt(s.value, 10);
-        let eVal = parseInt(e.value, 10);
-        if (Number.isNaN(sVal)) sVal = 1965;
-        if (Number.isNaN(eVal)) eVal = 2024;
-        if (sVal < 1965) sVal = 1965;
-        if (eVal > 2024) eVal = 2024;
-        if (sVal > eVal) [sVal, eVal] = [eVal, sVal];
-        lineView.signal('startYear', sVal).signal('endYear', eVal).run();
+    /* Malaysia line (left of Malaysia row) */
+    const lineSpec = {
+      "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+      "autosize": {"type":"fit","contains":"padding"},
+      "padding": smallPadding,
+      "width": 510,
+      "height": 360,
+      "params": [{"name":"startYear","value":1965},{"name":"endYear","value":2024}],
+      "data":{"url":"malaysia_renewable.csv","format":{"type":"csv"}},
+      "transform":[{"filter":"datum.Year >= startYear && datum.Year <= endYear"}],
+      "mark":{"type":"line","point":true,"interpolate":"monotone"},
+      "encoding":{
+        "x":{"field":"Year","type":"quantitative","axis":{"title":"Year"}},
+        "y":{"field":"Renewables (% equivalent primary energy)","type":"quantitative","axis":{"title":"Renewables (%)"}},
+        "tooltip":[{"field":"Year","title":"Year"},{"field":"Renewables (% equivalent primary energy)","title":"Renewables (%)","format":".2f"}]
       }
+    };
 
-      s.addEventListener('change', updateYears);
-      e.addEventListener('change', updateYears);
-      resetBtn.addEventListener('click', () => {
-        s.value = 1965;
-        e.value = 2024;
-        updateYears();
-      });
+    /* Global energy composition stacked bar */
+    // NOTE: disable Vega legend (legend: null) and supply HTML legend above.
+    const stackSpec = {
+      "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+      "autosize": {"type":"fit","contains":"padding"},
+      "padding": smallPadding,
+      "width": 510,
+      "height": 360,
+      "data":{"url":"global_energy_type_composition.csv","format":{"type":"csv"}},
+      "mark":"bar",
+      "encoding":{
+        "x":{"field":"Year","type":"ordinal","axis":{"title":"Year","labelAngle":-45}},
+        "y":{"field":"Production (GWh)","type":"quantitative","stack":"normalize","axis":{"title":"Share of Total Renewable Energy (%)","format":"%"}},
+        "color":{
+          "field":"Energy Type",
+          "type":"nominal",
+          "title":"Energy Source",
+          "scale": {
+            "domain": ["Biomass","Geothermal","Hydro","Solar","Wind"],
+            "range": ["#4f6db6","#f49b3b","#d55f5f","#6fc0b0","#4aa64a"]
+          },
+          "legend": null   // disable built-in legend so plot area stays full height
+        }
+      },
+      "config": {
+        "axis": {"labelFontSize": 12, "titleFontSize": 13}
+      }
+    };
 
-      // Initialize params
-      lineView.signal('startYear', parseInt(s.value, 10)).signal('endYear', parseInt(e.value, 10)).run();
+    // embed charts
+    vegaEmbed("#pm25Vis", pm25Spec, {mode:"vega-lite", actions:false}).catch(console.warn);
+    vegaEmbed("#pm25Bar", pm25BarSpec, {mode:"vega-lite", actions:false}).catch(console.warn);
+    vegaEmbed("#vis-chart", deathsSpec, {mode:"vega-lite", actions:false}).catch(console.warn);
+    vegaEmbed("#mapVis", mapSpec, {mode:"vega-lite", actions:false}).catch(console.warn);
+
+    vegaEmbed("#lineVis", lineSpec, {mode:"vega-lite", actions:false}).then(result=>{
+      const view = result.view;
+      const s = document.getElementById("startYear");
+      const e = document.getElementById("endYear");
+      const reset = document.getElementById("resetYears");
+      if (s && e && reset) {
+        function updateYears(){
+          let sVal = parseInt(s.value,10);
+          let eVal = parseInt(e.value,10);
+          if (Number.isNaN(sVal)) sVal = 1965;
+          if (Number.isNaN(eVal)) eVal = 2024;
+          if (sVal > eVal) [sVal,eVal] = [eVal,sVal];
+          view.signal("startYear", sVal).signal("endYear", eVal).run();
+        }
+        s.addEventListener("change", updateYears);
+        e.addEventListener("change", updateYears);
+        reset.addEventListener("click", ()=>{ s.value=1965; e.value=2024; updateYears(); });
+        // initialize
+        view.signal("startYear", parseInt(s.value,10)).signal("endYear", parseInt(e.value,10)).run();
+      }
     }).catch(console.warn);
-  </script>
 
+    vegaEmbed("#stackVis", stackSpec, {mode:"vega-lite", actions:false}).catch(console.warn);
+  </script>
 </body>
 </html>
