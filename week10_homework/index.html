@@ -15,11 +15,19 @@
     .vis-container {
       max-width: 1000px;
       margin: 0 auto 60px auto;
+      text-align: left;
     }
-    h2 {
-      margin-top: 10px;
-      margin-bottom: 20px;
+    .controls {
+      margin-bottom: 12px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
     }
+    label { font-size: 14px; }
+    input[type="number"] { padding: 6px 8px; font-size: 14px; width: 80px; }
+    button { padding: 6px 10px; }
+    h2 { margin-top: 10px; margin-bottom: 10px; text-align: center; }
   </style>
 </head>
 <body>
@@ -33,6 +41,16 @@
   <!-- 📈 Malaysia Line Chart Section -->
   <div class="vis-container">
     <h2>Malaysia — Renewables (% Equivalent Primary Energy) (1965–2024)</h2>
+
+    <!-- Line chart controls: start + end year -->
+    <div class="controls">
+      <label for="startYear">Start year:</label>
+      <input id="startYear" type="number" min="1965" max="2024" value="1965" />
+      <label for="endYear">End year:</label>
+      <input id="endYear" type="number" min="1965" max="2024" value="2024" />
+      <button id="resetYears">Reset</button>
+    </div>
+
     <div id="lineVis"></div>
   </div>
 
@@ -93,22 +111,28 @@
       ]
     };
 
-    // ====== LINE CHART SPEC (BOTTOM) ======
+
+    // ====== LINE CHART SPEC (with year range filter) ======
     const lineSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "width": 900,
       "height": 400,
+      "params": [
+        { "name": "startYear", "value": 1965 },
+        { "name": "endYear", "value": 2024 }
+      ],
       "data": {
         "url": "malaysia_renewable.csv",
         "format": {"type": "csv"}
       },
+      "transform": [
+        {
+          "filter": "datum.Year >= startYear && datum.Year <= endYear"
+        }
+      ],
       "mark": {"type": "line", "point": true, "interpolate": "monotone"},
       "encoding": {
-        "x": {
-          "field": "Year",
-          "type": "quantitative",
-          "axis": {"title": "Year"}
-        },
+        "x": {"field": "Year", "type": "quantitative", "axis": {"title": "Year"}},
         "y": {
           "field": "Renewables (% equivalent primary energy)",
           "type": "quantitative",
@@ -122,8 +146,38 @@
     };
 
     // Embed both charts
-    vegaEmbed("#mapVis", mapSpec, {mode: "vega-lite"}).then(console.log).catch(console.warn);
-    vegaEmbed("#lineVis", lineSpec, {mode: "vega-lite"}).then(console.log).catch(console.warn);
+    let lineView;
+    vegaEmbed("#mapVis", mapSpec, {mode: "vega-lite"}).catch(console.warn);
+
+    vegaEmbed("#lineVis", lineSpec, {mode: "vega-lite"}).then(result => {
+      lineView = result.view;
+
+      const s = document.getElementById('startYear');
+      const e = document.getElementById('endYear');
+      const resetBtn = document.getElementById('resetYears');
+
+      function updateYears() {
+        let sVal = parseInt(s.value, 10);
+        let eVal = parseInt(e.value, 10);
+        if (Number.isNaN(sVal)) sVal = 1965;
+        if (Number.isNaN(eVal)) eVal = 2024;
+        if (sVal < 1965) sVal = 1965;
+        if (eVal > 2024) eVal = 2024;
+        if (sVal > eVal) [sVal, eVal] = [eVal, sVal];
+        lineView.signal('startYear', sVal).signal('endYear', eVal).run();
+      }
+
+      s.addEventListener('change', updateYears);
+      e.addEventListener('change', updateYears);
+      resetBtn.addEventListener('click', () => {
+        s.value = 1965;
+        e.value = 2024;
+        updateYears();
+      });
+
+      // Initialize params
+      lineView.signal('startYear', parseInt(s.value, 10)).signal('endYear', parseInt(e.value, 10)).run();
+    }).catch(console.warn);
   </script>
 
 </body>
