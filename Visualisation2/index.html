@@ -24,7 +24,7 @@
       padding: 0 12px 60px;
     }
 
-    .section { margin-bottom: 40px; }
+    .section { margin-bottom: 110px; }
     .section-title {
       font-size: 24px;
       margin: 6px 0 18px;
@@ -125,25 +125,67 @@
       .chart-embed { height: 320px; }
       .stack-legend { height: auto; margin-bottom: 8px; }
     }
+
+    /* Storytelling text styles */
+    .main-title {
+      font-size: 44px;
+      font-weight: 800;
+      text-align: center;
+      margin: 8px 0 18px;
+      letter-spacing: 1px;
+    }
+    .lead {
+      text-align: center;
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 26px;
+      max-width: 920px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .paragraph {
+      font-size: 16px;
+      color: #333;
+      margin: 10px 0 18px;
+      line-height: 1.5;
+      text-align: justify;
+    }
+    .paragraph strong { font-weight: 700; color: #000; }
   </style>
 </head>
 <body>
   <div class="page">
+
+    <!-- BIG TITLE -->
+    <h1 class="main-title">FROM POLLUTION TO SOLUTION</h1>
+
+    <!-- Intro paragraph -->
+    <p class="lead"><strong>Air pollution</strong> is a global health crisis — this page walks through the scale of the problem and highlights how <strong>renewable energy</strong> is part of the solution.</p>
+
+    <!-- short background before the world map -->
+    <p class="paragraph">
+      <strong>Background:</strong> Tiny particles in the air known as <strong>PM2.5</strong> travel deep into the lungs and bloodstream. Long-term exposure increases the risk of respiratory and cardiovascular illnesses, and contributes to premature deaths worldwide.
+    </p>
 
     <!-- World PM2.5 map -->
     <section class="section">
       <div class="section-title">Average PM2.5 (µg/m³) — World Map</div>
       <div class="map-container">
         <div class="card">
-          <h3>World PM2.5 Map</h3>
+          <!-- <h3>World PM2.5 Map</h3> -->
           <div id="pm25Vis" class="map-embed"></div>
         </div>
       </div>
     </section>
 
+    <!-- a short sentence about deaths -->
+    <p class="paragraph">
+      <strong>Health impact:</strong> High PM2.5 concentrations are strongly associated with increased mortality — even small increases in average exposure raise the number of premature deaths.
+    </p>
+
     <!-- Top10 + Deaths -->
     <section class="section">
-      <div class="section-title">Top 10 PM2.5 Countries & Deaths from Air Pollution</div>
+      <!-- <div class="section-title">Top 10 PM2.5 Countries & Deaths from Air Pollution</div> -->
       <div class="two-col-wrap">
         <div class="col-half">
           <div class="card">
@@ -161,20 +203,28 @@
       </div>
     </section>
 
+    <!-- paragraph about solutions -->
+    <p class="paragraph">
+      <strong>Solution direction:</strong> Transitioning energy systems away from fossil fuels and toward <strong>renewable sources</strong> (solar, wind, hydro, biomass, geothermal) reduces emissions and improves air quality — protecting health and the environment.
+    </p>
+
     <!-- Global renewables map -->
     <section class="section">
       <div class="section-title">Global Renewables (% Equivalent Primary Energy) — 2022</div>
       <div class="map-container">
         <div class="card">
-          <h3>Global Renewables Map</h3>
+          <!-- <h3>Global Renewables Map</h3> -->
           <div id="mapVis" class="map-embed"></div>
         </div>
       </div>
     </section>
 
-    <!-- Malaysia + stacked composition (legend placed above stacked bar as HTML) -->
+    <!-- Malaysia + stacked composition -->
     <section class="section">
-      <div class="section-title">Malaysia — Renewables & Global Composition</div>
+      <!-- <div class="section-title">Malaysia — Renewables & Global Composition</div> -->
+      <p class="paragraph">
+        Below, we inspect Malaysia’s historical renewable share and the global composition of renewable production by type. Use the year controls to focus the Malaysia series.
+      </p>
       <div class="two-col-wrap">
         <div class="col-half">
           <div class="card">
@@ -202,6 +252,11 @@
         </div>
       </div>
     </section>
+
+    <!-- Conclusion -->
+    <p class="paragraph" style="margin-top:18px;">
+      <strong>Conclusion:</strong> Reducing air pollution requires both policy action and clean energy investment. The shift to renewables is a practical and effective path from <strong>pollution</strong> to a healthier, more sustainable <strong>future</strong>.
+    </p>
 
   </div>
 
