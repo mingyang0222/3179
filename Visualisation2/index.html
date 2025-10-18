@@ -3,18 +3,26 @@
 <head>
   <meta charset="utf-8" />
   <title>Global & Malaysia Renewables Visualisation — consistent sizing + legend above stacked bar</title>
+
+  <!-- Fonts: Playfair Display for the big title + Inter for body/ui -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
   <style>
     :root { box-sizing: border-box; }
     *, *::before, *::after { box-sizing: inherit; }
 
+    /* Primary UI font */
     body {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       margin: 20px;
-      background: #fff;
+      background: linear-gradient(180deg, #eaf6ff 0%, #f7fbff 100%);
       color: #111;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* page column */
@@ -24,24 +32,112 @@
       padding: 0 12px 60px;
     }
 
-    .section { margin-bottom: 110px; }
-    .section-title {
-      font-size: 24px;
-      margin: 6px 0 18px;
-      font-weight: 700;
-      text-align: left;
+    /* --- Visual hierarchy (larger sizes) --- */
+    .main-title {
+      font-family: "Playfair Display", "Inter", serif;
+      font-size: 60px;           /* BIG title */
+      font-weight: 900;
+      text-align: center;
+      margin: 4px 0 6px;         /* tightened margins */
+      letter-spacing: 1px;
+      line-height: 1.00;         /* reduced line spacing */
+      color: #0f1724;
+
+      /* preserve whitespace and center-align each line */
+      white-space: pre-wrap;
+      text-align: center;
     }
 
+    /* decorative line below the main title */
+    .main-title::after {
+      content: "";
+      display: block;
+      width: 1050px;                 /* length of the bar */
+      height: 6px;                  /* thickness */
+      margin: 12px auto 18px;       /* spacing above & below */
+      border-radius: 4px;
+      background: linear-gradient(90deg, #0f1724, #8cc6d7); /* subtle gradient */
+      opacity: 0.98;
+    }
+
+    .lead {
+      text-align: center;
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 12px;       /* tightened */
+      max-width: 920px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.25;         /* reduced from 1.45 */
+      white-space: pre-wrap;
+      text-align: center;
+    }
+
+    .lead::after {
+      content: "";
+      display: block;
+      width: 1050px;                 /* same as title line */
+      height: 6px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #0f1724, #8cc6d7);
+      opacity: 0.98;
+      position: relative;
+      left: 50%;                     /* move to center of viewport */
+      transform: translateX(-50%);   /* pull it back by half its width */
+      margin: 12px 0 18px;           /* remove auto-centering margins */
+    }
+
+
+    .section { margin-bottom: 10px; } /* reduced overall gap */
+
+    .section-title {
+      font-size: 26px;
+      margin: 2px 0 6px;         /* tightened margins */
+      font-weight: 700;
+      text-align: center;
+      color: #111;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      line-height: 1.05;         /* reduced */
+      white-space: pre-wrap;
+    }
+
+    .paragraph {
+      font-size: 18px;
+      color: #333;
+      margin: 6px 0 12px;        /* tightened margins */
+      line-height: 1.28;         /* reduced from 1.6 to bring lines closer */
+      text-align: center;
+      white-space: pre-wrap;     /* preserve whitespace */
+    }
+    .paragraph strong { font-weight: 700; color: #000; }
+
+    /* Card styles (slightly taller to fit charts) */
     .card {
       background: #fff;
       border-radius: 12px;
-      padding: 14px;
+      padding: 14px;             /* slightly reduced padding */
       box-shadow: 0 6px 18px rgba(20,20,20,0.04);
       overflow: visible;
       position: relative;
+
+      /* ensure card contains chart comfortably */
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 8px;                  /* tightened gap */
     }
 
-    .card h3 { font-size: 16px; margin-bottom: 10px; font-weight: 600; text-align: left; }
+    .card h3 {
+      font-size: 18px;
+      margin-bottom: 6px;        /* tightened */
+      font-weight: 600;
+      text-align: center;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color: #111;
+      line-height: 1.02;         /* reduced */
+      white-space: pre-wrap;
+    }
 
     /* maps (shared size) */
     .map-container {
@@ -59,7 +155,7 @@
       width: 1040px;
       max-width: 100%;
       display: flex;
-      gap: 20px;
+      gap: 18px;                 /* slightly reduced gap between columns */
       margin: 0 auto;
       justify-content: space-between;
       flex-wrap: nowrap;
@@ -75,20 +171,25 @@
 
     /* stacked bar legend area + chart (legend above chart) */
     .stack-legend {
-      height: 60px; /* reserved area above the chart for HTML legend */
+      height: 64px;              /* tightened */
       display: flex;
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
       padding-left: 6px;
+      justify-content: center;
     }
     .legend-item {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 14px;
+      font-size: 15px;
       color: #111;
-      margin-right: 8px;
+      margin-right: 6px;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      line-height: 1.05;         /* reduced */
+      white-space: pre-wrap;
+      text-align: center;
     }
     .legend-swatch {
       width: 18px;
@@ -99,16 +200,16 @@
     }
 
     /* embed area heights:
-       charts 360px plotting area, plus stack legend 60px => consistent card total height */
+       charts 400px plotting area, plus stack legend => consistent card total height */
     .chart-embed {
       width: 100%;
-      height: 360px;   /* plotting area */
+      height: 400px;   /* slightly reduced to fit tighter card */
     }
 
-    .controls { margin-bottom: 12px; display:flex; gap:12px; align-items:center; justify-content:flex-start; }
-    label { font-size: 14px; }
-    input[type="number"] { padding:6px 8px; font-size:14px; width:80px; }
-    button { padding:6px 10px; }
+    .controls { margin-bottom: 10px; display:flex; gap:10px; align-items:center; justify-content:center; }
+    label { font-size: 15px; font-family: "Inter", sans-serif; text-align: center; white-space: pre-wrap; }
+    input[type="number"] { padding:6px 8px; font-size:15px; width:80px; font-family: "Inter", sans-serif; }
+    button { padding:6px 10px; font-family: "Inter", sans-serif; }
 
     /* make vega internals fill parent */
     .card .vega-embed, .card svg, .card canvas, .card iframe {
@@ -117,40 +218,18 @@
       display: block;
     }
 
-    /* responsive */
+    /* responsive adjustments */
     @media (max-width: 1040px) {
       .map-container, .two-col-wrap { width: 100%; padding: 0 12px; box-sizing: border-box; }
       .col-half { width: 100%; }
       .map-embed { height: 420px; }
-      .chart-embed { height: 320px; }
-      .stack-legend { height: auto; margin-bottom: 8px; }
+      .chart-embed { height: 360px; }
+      .stack-legend { height: auto; margin-bottom: 6px; }
+      .main-title { font-size: 44px; line-height: 1.00; }
+      .section-title { font-size: 22px; line-height: 1.05; }
+      .paragraph { font-size: 16px; line-height: 1.25; }
+      .card { min-height: 420px; }
     }
-
-    /* Storytelling text styles */
-    .main-title {
-      font-size: 44px;
-      font-weight: 800;
-      text-align: center;
-      margin: 8px 0 18px;
-      letter-spacing: 1px;
-    }
-    .lead {
-      text-align: center;
-      font-size: 18px;
-      color: #333;
-      margin-bottom: 26px;
-      max-width: 920px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .paragraph {
-      font-size: 16px;
-      color: #333;
-      margin: 10px 0 18px;
-      line-height: 1.5;
-      text-align: justify;
-    }
-    .paragraph strong { font-weight: 700; color: #000; }
   </style>
 </head>
 <body>
@@ -160,7 +239,7 @@
     <h1 class="main-title">FROM POLLUTION TO SOLUTION</h1>
 
     <!-- Intro paragraph -->
-    <p class="lead"><strong>Air pollution</strong> is a global health crisis — this page walks through the scale of the problem and highlights how <strong>renewable energy</strong> is part of the solution.</p>
+    <p class="lead"><strong>Air pollution</strong> is a global health crisis — this page walks through the problem and highlights how <strong>renewable energy</strong> is part of the solution.</p>
 
     <!-- short background before the world map -->
     <p class="paragraph">
@@ -185,11 +264,10 @@
 
     <!-- Top10 + Deaths -->
     <section class="section">
-      <!-- <div class="section-title">Top 10 PM2.5 Countries & Deaths from Air Pollution</div> -->
       <div class="two-col-wrap">
         <div class="col-half">
           <div class="card">
-            <h3>Top 10 Countries — Avg PM2.5</h3>
+            <h3>Top 10 Countries — Average PM2.5</h3>
             <div id="pm25Bar" class="chart-embed"></div>
           </div>
         </div>
@@ -213,7 +291,6 @@
       <div class="section-title">Global Renewables (% Equivalent Primary Energy) — 2022</div>
       <div class="map-container">
         <div class="card">
-          <!-- <h3>Global Renewables Map</h3> -->
           <div id="mapVis" class="map-embed"></div>
         </div>
       </div>
@@ -221,14 +298,10 @@
 
     <!-- Malaysia + stacked composition -->
     <section class="section">
-      <!-- <div class="section-title">Malaysia — Renewables & Global Composition</div> -->
-      <p class="paragraph">
-        Below, we inspect Malaysia’s historical renewable share and the global composition of renewable production by type. Use the year controls to focus the Malaysia series.
-      </p>
       <div class="two-col-wrap">
         <div class="col-half">
           <div class="card">
-            <h3>Malaysia — Renewables (% equivalent primary energy) (1965–2024)</h3>
+            <h3>Malaysia — Renewables (% equivalent primary energy)</h3>
             <div class="controls">
               <label for="startYear">Start:</label>
               <input id="startYear" type="number" min="1965" max="2024" value="1965" />
@@ -242,7 +315,7 @@
 
         <div class="col-half">
           <div class="card">
-            <h3>Global Renewable Energy Composition by Type (share of renewable total)</h3>
+            <h3>Global Renewable Energy Composition by Type </h3>
 
             <!-- HTML legend just above the Vega embed -->
             <div id="stackLegend" class="stack-legend" aria-hidden="false"></div>
@@ -254,24 +327,123 @@
     </section>
 
     <!-- Conclusion -->
-    <p class="paragraph" style="margin-top:18px;">
+    <p class="paragraph" style="margin-top:12px;">
       <strong>Conclusion:</strong> Reducing air pollution requires both policy action and clean energy investment. The shift to renewables is a practical and effective path from <strong>pollution</strong> to a healthier, more sustainable <strong>future</strong>.
     </p>
 
   </div>
 
   <script>
+    /**********************************************************************
+     * Enhanced splitTextIntoLines:
+     * - preserves ALL whitespace (leading/trailing + multiple spaces)
+     * - preserves inline elements (e.g. <strong>)
+     * - inserts <br> after `maxWords` words (counting only non-space tokens)
+     * - does not touch inputs, scripts, iframes, etc.
+     **********************************************************************/
+    function splitTextIntoLines(rootEl, maxWords = 12) {
+      if (!rootEl) return;
+
+      const skipTags = new Set(['SCRIPT','STYLE','INPUT','TEXTAREA','SELECT','IFRAME','CANVAS','SVG']);
+
+      function processNode(node, counterObj) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const raw = node.nodeValue;
+          if (!raw) return;
+
+          // Match either a run of non-space characters (\S+) or a run of spaces (\s+)
+          const tokens = raw.match(/(\S+|\s+)/g);
+          if (!tokens) return;
+
+          const frag = document.createDocumentFragment();
+
+          for (let i = 0; i < tokens.length; i++) {
+            const tok = tokens[i];
+            const isWord = /\S/.test(tok);
+
+            // create a text node for this token (preserves token exactly, including spaces)
+            frag.appendChild(document.createTextNode(tok));
+
+            if (isWord) {
+              counterObj.count++;
+              if (counterObj.count >= maxWords) {
+                // After hitting the max, insert a <br> to force a new line
+                frag.appendChild(document.createElement('br'));
+                // reset count so next words start counting from 0
+                counterObj.count = 0;
+              }
+            }
+          }
+
+          // replace original node with fragment
+          node.parentNode.insertBefore(frag, node);
+          node.parentNode.removeChild(node);
+
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          if (skipTags.has(node.tagName)) return;
+
+          // treat block-level elements as line/reset boundaries
+          const display = window.getComputedStyle(node).display;
+          const isBlock = display === 'block' || display === 'flex' || display === 'table' ||
+                          node.tagName === 'P' || node.tagName === 'DIV' || node.tagName === 'SECTION' ||
+                          node.tagName === 'H1' || node.tagName === 'H2' || node.tagName === 'H3' ||
+                          node.tagName === 'LI';
+
+          // if block, reset counter for its children
+          const childCounter = isBlock ? { count: 0 } : counterObj;
+
+          // Snapshot child nodes because we will mutate them
+          const children = Array.from(node.childNodes);
+          for (const cn of children) processNode(cn, childCounter);
+        }
+      }
+
+      const initialCounter = { count: 0 };
+      const children = Array.from(rootEl.childNodes);
+      for (const c of children) processNode(c, initialCounter);
+    }
+
+    function applySplitting() {
+      // selectors we will process (safe list)
+      const safeSelectors = [
+        '.main-title',
+        '.lead',
+        '.paragraph',
+        '.section-title',
+        '.card h3',
+        '.legend-item',
+        'label'
+      ];
+      safeSelectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+          // run only if element has text nodes to avoid reprocessing multiple times
+          splitTextIntoLines(el, 12);
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applySplitting();
+      // run again after a short delay to catch any late-rendered text
+      setTimeout(applySplitting, 500);
+    });
+
+  </script>
+
+  <script>
     // colors & labels for the stacked legend (must match the Vega color scale)
     const stackLegendItems = [
-      {key: "Biomass", color: "#4f6db6"},
-      {key: "Geothermal", color: "#f49b3b"},
-      {key: "Hydro", color: "#d55f5f"},
-      {key: "Solar", color: "#6fc0b0"},
-      {key: "Wind", color: "#4aa64a"}
+      { key: "Biomass",    color: "#7b9acc" },
+      { key: "Geothermal", color: "#f2b880" },
+      { key: "Hydro",      color: "#b28fd6" },
+      { key: "Solar",      color: "#ffe999" },
+      { key: "Wind",       color: "#8cc6d7" }
     ];
 
     // build HTML legend above the stacked bar
     const legendContainer = document.getElementById('stackLegend');
+    // clear any existing legend content (prevents duplicates if script re-runs)
+    if (legendContainer) legendContainer.innerHTML = '';
     stackLegendItems.forEach(item => {
       const it = document.createElement('div');
       it.className = 'legend-item';
@@ -282,7 +454,7 @@
       const lbl = document.createElement('span');
       lbl.textContent = item.key;
       it.appendChild(lbl);
-      legendContainer.appendChild(it);
+      if (legendContainer) legendContainer.appendChild(it);
     });
 
     // padding values used to ensure axes/legend not clipped. Smaller charts use 'smallPadding'
@@ -325,13 +497,13 @@
             "color": {
               "field": "avg_PM25",
               "type": "quantitative",
-              "scale": {"scheme": "inferno"},
-              "title": "Avg PM2.5 (µg/m³)",
-              "legend": {"orient":"right"}
+              "scale": {"scheme": "inferno", "reverse": true},
+              "title": "Average PM2.5 (µg/m³)",
+              "legend": {"orient":"right", "format": "d"}
             },
             "tooltip": [
               {"field": "properties.NAME","title":"Country"},
-              {"field":"avg_PM25","title":"Avg PM2.5 (µg/m³)","format":".2f"}
+              {"field":"avg_PM25","title":"Average PM2.5 (µg/m³)","format":".2f"}
             ]
           }
         }
@@ -350,11 +522,28 @@
         {"window":[{"op":"rank","as":"Rank"}],"sort":[{"field":"avg_PM25","order":"descending"}]},
         {"filter":"datum.Rank <= 10"}
       ],
-      "mark":{"type":"bar","tooltip":true,"cornerRadiusTopLeft":4,"cornerRadiusTopRight":4},
-      "encoding":{
-        "y":{"field":"Country","type":"nominal","sort":"-x","axis":{"title":"Country"}},
-        "x":{"field":"avg_PM25","type":"quantitative","axis":{"title":"Average PM2.5 (µg/m³)"}},
-        "color":{"value":"#1f77b4"}
+      "mark": {
+        "type": "bar",
+        "cornerRadiusTopLeft": 4,
+        "cornerRadiusTopRight": 4
+      },
+      "encoding": {
+        "y": {
+          "field": "Country",
+          "type": "nominal",
+          "sort": "-x",
+          "axis": { "title": "Country", "labelFontSize": 14, "titleFontSize": 14 }
+        },
+        "x": {
+          "field": "avg_PM25",
+          "type": "quantitative",
+          "axis": { "title": "Average PM2.5 (µg/m³)", "format": ".2f", "labelFontSize": 14, "titleFontSize": 14 }
+        },
+        "color": { "value": "#1f77b4" },
+        "tooltip": [
+          { "field": "Country", "type": "nominal", "title": "Country" },
+          { "field": "avg_PM25", "type": "quantitative", "title": "Average (µg/m³)", "format": ".2f" }
+        ]
       }
     };
 
@@ -370,9 +559,14 @@
       "layer":[
         {"mark":{"type":"line","interpolate":"monotone"},
          "encoding":{
-           "x":{"field":"Year","type":"temporal","axis":{"title":"Year"}},
-           "y":{"field":"DeathRate","type":"quantitative","axis":{"title":"Death rate (per 100,000)"}},
-           "color":{"field":"Entity","type":"nominal","title":""}
+           "x":{"field":"Year","type":"temporal","axis":{"title":"Year","labelFontSize":14,"titleFontSize":14}},
+           "y":{"field":"DeathRate","type":"quantitative","axis":{"title":"Death rate (per 100,000)","format":".2f","labelFontSize":14,"titleFontSize":14}},
+           "color":{"field":"Entity","type":"nominal","title":""},
+           "tooltip": [
+             {"field":"Entity","title":"Entity"},
+             {"field":"Year","title":"Year","type":"temporal"},
+             {"field":"DeathRate","title":"Death rate (per 100,000)","format":".2f"}
+           ]
          }
         },
         {"mark":{"type":"point","filled":true,"size":30},
@@ -398,7 +592,56 @@
       "layer":[
         {"data":{"url":"https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/7_others/oceans.topojson","format":{"type":"topojson","feature":"oceans"}},"mark":{"type":"geoshape","fill":"skyblue"}},
         {"data":{"url":"ne_110m_admin_0_countries.topojson","format":{"type":"topojson","feature":"ne_110m_admin_0_countries"}},"mark":{"type":"geoshape","fill":"lightgray","stroke":"white"}},
-        {"data":{"url":"ne_110m_admin_0_countries.topojson","format":{"type":"topojson","feature":"ne_110m_admin_0_countries"}},"transform":[{"lookup":"properties.ISO_A3","from":{"data":{"url":"renewables_2022.csv","format":{"type":"csv"}},"key":"Code","fields":["Renewables (% equivalent primary energy)"]}}],"mark":{"type":"geoshape","stroke":"white"},"encoding":{"color":{"field":"Renewables (% equivalent primary energy)","type":"quantitative","scale":{"scheme":"goldgreen"},"title":"Renewables (%)"},"tooltip":[{"field":"properties.NAME","title":"Country"},{"field":"Renewables (% equivalent primary energy)","title":"Renewables (%)"}]}}
+        {"data":{"url":"ne_110m_admin_0_countries.topojson","format":{"type":"topojson","feature":"ne_110m_admin_0_countries"}},"transform":[{"lookup":"properties.ISO_A3","from":{"data":{"url":"renewables_2022.csv","format":{"type":"csv"}},"key":"Code","fields":["Renewables (% equivalent primary energy)"]}}],"mark":{"type":"geoshape","stroke":"white"},"encoding":{"color":{"field":"Renewables (% equivalent primary energy)","type":"quantitative","scale":{"scheme":"goldgreen"},"title":"Renewables (%)","legend":{"format":"d"}},"tooltip":[{"field":"properties.NAME","title":"Country"},{"field":"Renewables (% equivalent primary energy)","title":"Renewables (%)","format":".2f"}]}},
+        {"data": {
+            "values": [
+              {
+                "country": "Iceland",
+                "latitude": 64.9631,
+                "longitude": -19.0208,
+                "note": "Iceland leads globally due to abundant geothermal and hydropower resources."
+              }
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": -240,
+            "dy": -35,
+            "fontSize": 13,
+            "fontWeight": "600",
+            "color": "#111"
+          },
+          "encoding": {
+            "longitude": { "field": "longitude", "type": "quantitative" },
+            "latitude": { "field": "latitude", "type": "quantitative" },
+            "text": { "field": "note" }
+          }
+        },
+        /* Annotation line connector */
+        {
+          "data": {
+            "values": [
+              {
+                "latitude": 64.9631,
+                "longitude": -19.0208,
+                "latitude_end": 90,
+                "longitude_end": -70
+              }
+            ]
+          },
+          "mark": {
+            "type": "rule",
+            "color": "#333",
+            "strokeWidth": 1.5
+          },
+          "encoding": {
+            "longitude": { "field": "longitude", "type": "quantitative" },
+            "latitude": { "field": "latitude", "type": "quantitative" },
+            "longitude2": { "field": "longitude_end" },
+            "latitude2": { "field": "latitude_end" }
+          }
+        }
       ]
     };
 
@@ -414,14 +657,13 @@
       "transform":[{"filter":"datum.Year >= startYear && datum.Year <= endYear"}],
       "mark":{"type":"line","point":true,"interpolate":"monotone"},
       "encoding":{
-        "x":{"field":"Year","type":"quantitative","axis":{"title":"Year"}},
-        "y":{"field":"Renewables (% equivalent primary energy)","type":"quantitative","axis":{"title":"Renewables (%)"}},
+        "x":{"field":"Year","type":"quantitative","axis":{"title":"Year","labelFontSize":14,"titleFontSize":14}},
+        "y":{"field":"Renewables (% equivalent primary energy)","type":"quantitative","axis":{"title":"Renewables (%)","format":".2f","labelFontSize":14,"titleFontSize":14}},
         "tooltip":[{"field":"Year","title":"Year"},{"field":"Renewables (% equivalent primary energy)","title":"Renewables (%)","format":".2f"}]
       }
     };
 
     /* Global energy composition stacked bar */
-    // NOTE: disable Vega legend (legend: null) and supply HTML legend above.
     const stackSpec = {
       "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
       "autosize": {"type":"fit","contains":"padding"},
@@ -431,15 +673,15 @@
       "data":{"url":"global_energy_type_composition.csv","format":{"type":"csv"}},
       "mark":"bar",
       "encoding":{
-        "x":{"field":"Year","type":"ordinal","axis":{"title":"Year","labelAngle":-45}},
-        "y":{"field":"Production (GWh)","type":"quantitative","stack":"normalize","axis":{"title":"Share of Total Renewable Energy (%)","format":"%"}},
+        "x":{"field":"Year","type":"ordinal","axis":{"title":"Year","labelAngle":-45,"labelFontSize":12,"titleFontSize":13}},
+        "y":{"field":"Production (GWh)","type":"quantitative","stack":"normalize","axis":{"title":"Share of Total Renewable Energy (%)","format":"%","labelFontSize":12,"titleFontSize":13}},
         "color":{
           "field":"Energy Type",
           "type":"nominal",
           "title":"Energy Source",
           "scale": {
             "domain": ["Biomass","Geothermal","Hydro","Solar","Wind"],
-            "range": ["#4f6db6","#f49b3b","#d55f5f","#6fc0b0","#4aa64a"]
+            "range": ["#7b9acc", "#f2b880", "#b28fd6", "#ffe999", "#8cc6d7"]
           },
           "legend": null   // disable built-in legend so plot area stays full height
         }
