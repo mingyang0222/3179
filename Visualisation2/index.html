@@ -62,13 +62,13 @@
 
     .lead {
       text-align: center;
-      font-size: 20px;
+      font-size: 24px;
       color: #333;
       margin-bottom: 12px;       /* tightened */
       max-width: 920px;
       margin-left: auto;
       margin-right: auto;
-      line-height: 1.25;         /* reduced from 1.45 */
+      line-height: 1;         /* reduced from 1.45 */
       white-space: pre-wrap;
       text-align: center;
     }
@@ -102,10 +102,10 @@
     }
 
     .paragraph {
-      font-size: 18px;
+      font-size: 20px;
       color: #333;
       margin: 6px 0 12px;        /* tightened margins */
-      line-height: 1.28;         /* reduced from 1.6 to bring lines closer */
+      line-height: 1;         /* reduced from 1.6 to bring lines closer */
       text-align: center;
       white-space: pre-wrap;     /* preserve whitespace */
     }
@@ -216,6 +216,40 @@
       width: 100% !important;
       height: 100% !important;
       display: block;
+    }
+
+    /* small metadata footer below the conclusion */
+    .footer-meta {
+      color: #6b7280;              /* subtle grey */
+      font-size: 14px;
+      line-height: 1;
+      text-align: center;
+      max-width: 920px;
+      margin: 12px auto 40px;     /* space above & below */
+      white-space: pre-wrap;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      word-break: break-word;
+    }
+
+    .footer-meta a {
+      color: #6b7280;             /* keep links grey too */
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-weight: 500;
+    }
+
+
+    /* small metadata footer below the conclusion */
+    .footer-meta ol {
+      margin-top: 0px;      /* reduce top gap */
+      margin-bottom: 0;     /* remove bottom gap */
+      padding-left: 20px;   /* keep numbering slightly indented */
+      text-align: left;
+      display: inline-block;
+    }
+
+    .footer-meta li {
+      margin: 0px 0;        /* tighten vertical spacing between items */
     }
 
     /* responsive adjustments */
@@ -330,6 +364,21 @@
     <p class="paragraph" style="margin-top:12px;">
       <strong>Conclusion:</strong> Reducing air pollution requires both policy action and clean energy investment. The shift to renewables is a practical and effective path from <strong>pollution</strong> to a healthier, more sustainable <strong>future</strong>.
     </p>
+
+    <div class="footer-meta" aria-label="Document metadata">
+      <div><strong>Author:</strong> CHEN MING YANG</div>
+      <div><strong>Publish Date:</strong> 18 October 2025</div>
+      <div style="margin-top:8px;"><strong>Dataset URL:</strong></div>
+      <div style="margin-top:6px; text-align:left; display:inline-block;">
+        <ol>
+          <li><a href="https://www.kaggle.com/datasets/anishvijay/global-renewable-energy-and-indicators-dataset" target="_blank" rel="noopener noreferrer">Kaggle — Global Renewable Energy and Indicators</a></li>
+          <li><a href="https://ourworldindata.org/renewable-energy" target="_blank" rel="noopener noreferrer">Our World in Data — Renewable Energy</a></li>
+          <li><a href="https://www.kaggle.com/datasets/hasibalmuzdadid/global-air-pollution-dataset" target="_blank" rel="noopener noreferrer">Kaggle — Global Air Pollution Dataset</a></li>
+          <li><a href="https://www.kaggle.com/datasets/pavan9065/air-pollution?select=death-rates-from-air-pollution.csv" target="_blank" rel="noopener noreferrer">Kaggle — Air Pollution (death rates)</a></li>
+        </ol>
+      </div>
+    </div>
+
 
   </div>
 
