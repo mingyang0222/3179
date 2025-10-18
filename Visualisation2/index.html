@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <title>Global & Malaysia Renewables Visualisation — consistent sizing + legend above stacked bar</title>
 
-  <!-- Fonts: Playfair Display for the big title + Inter for body/ui -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
@@ -15,7 +14,6 @@
     :root { box-sizing: border-box; }
     *, *::before, *::after { box-sizing: inherit; }
 
-    /* Primary UI font */
     body {
       font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       margin: 20px;
@@ -25,38 +23,34 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* page column */
     .page {
       max-width: 1100px;
       margin: 0 auto;
       padding: 0 12px 60px;
     }
 
-    /* --- Visual hierarchy (larger sizes) --- */
     .main-title {
       font-family: "Playfair Display", "Inter", serif;
-      font-size: 60px;           /* BIG title */
+      font-size: 60px;         
       font-weight: 900;
       text-align: center;
-      margin: 4px 0 6px;         /* tightened margins */
+      margin: 4px 0 6px;        
       letter-spacing: 1px;
-      line-height: 1.00;         /* reduced line spacing */
+      line-height: 1.00;         
       color: #0f1724;
 
-      /* preserve whitespace and center-align each line */
       white-space: pre-wrap;
       text-align: center;
     }
 
-    /* decorative line below the main title */
     .main-title::after {
       content: "";
       display: block;
-      width: 1050px;                 /* length of the bar */
-      height: 6px;                  /* thickness */
-      margin: 12px auto 18px;       /* spacing above & below */
+      width: 1050px;                 
+      height: 6px;                 
+      margin: 12px auto 18px;     
       border-radius: 4px;
-      background: linear-gradient(90deg, #0f1724, #8cc6d7); /* subtle gradient */
+      background: linear-gradient(90deg, #0f1724, #8cc6d7); 
       opacity: 0.98;
     }
 
@@ -64,11 +58,11 @@
       text-align: center;
       font-size: 24px;
       color: #333;
-      margin-bottom: 12px;       /* tightened */
+      margin-bottom: 12px;       
       max-width: 920px;
       margin-left: auto;
       margin-right: auto;
-      line-height: 1;         /* reduced from 1.45 */
+      line-height: 1;         
       white-space: pre-wrap;
       text-align: center;
     }
@@ -76,70 +70,67 @@
     .lead::after {
       content: "";
       display: block;
-      width: 1050px;                 /* same as title line */
+      width: 1050px;                 
       height: 6px;
       border-radius: 4px;
       background: linear-gradient(90deg, #0f1724, #8cc6d7);
       opacity: 0.98;
       position: relative;
-      left: 50%;                     /* move to center of viewport */
-      transform: translateX(-50%);   /* pull it back by half its width */
-      margin: 12px 0 18px;           /* remove auto-centering margins */
+      left: 50%;                     
+      transform: translateX(-50%);   
+      margin: 12px 0 18px;           
     }
 
 
-    .section { margin-bottom: 10px; } /* reduced overall gap */
+    .section { margin-bottom: 10px; } 
 
     .section-title {
       font-size: 26px;
-      margin: 2px 0 6px;         /* tightened margins */
+      margin: 2px 0 6px;         
       font-weight: 700;
       text-align: center;
       color: #111;
       font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      line-height: 1.05;         /* reduced */
+      line-height: 1.05;        
       white-space: pre-wrap;
     }
 
     .paragraph {
       font-size: 20px;
       color: #333;
-      margin: 6px 0 12px;        /* tightened margins */
-      line-height: 1;         /* reduced from 1.6 to bring lines closer */
+      margin: 6px 0 12px;      
+      line-height: 1;         
       text-align: center;
-      white-space: pre-wrap;     /* preserve whitespace */
+      white-space: pre-wrap;     
     }
     .paragraph strong { font-weight: 700; color: #000; }
 
-    /* Card styles (slightly taller to fit charts) */
     .card {
       background: #fff;
       border-radius: 12px;
-      padding: 14px;             /* slightly reduced padding */
+      padding: 14px;             
       box-shadow: 0 6px 18px rgba(20,20,20,0.04);
       overflow: visible;
       position: relative;
 
-      /* ensure card contains chart comfortably */
       min-height: 500px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      gap: 8px;                  /* tightened gap */
+      gap: 8px;                  
     }
 
     .card h3 {
       font-size: 18px;
-      margin-bottom: 6px;        /* tightened */
+      margin-bottom: 6px;        
       font-weight: 600;
       text-align: center;
       font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       color: #111;
-      line-height: 1.02;         /* reduced */
+      line-height: 1.02;        
       white-space: pre-wrap;
     }
 
-    /* maps (shared size) */
     .map-container {
       width: 1040px;
       max-width: 100%;
@@ -150,16 +141,15 @@
       height: 500px;
     }
 
-    /* two-column layout: total width 1040 */
     .two-col-wrap {
       width: 1040px;
       max-width: 100%;
       display: flex;
-      gap: 18px;                 /* slightly reduced gap between columns */
+      gap: 18px;                
       margin: 0 auto;
       justify-content: space-between;
       flex-wrap: nowrap;
-      align-items: stretch; /* match heights */
+      align-items: stretch; 
     }
 
     .col-half {
@@ -169,9 +159,8 @@
       flex-direction: column;
     }
 
-    /* stacked bar legend area + chart (legend above chart) */
     .stack-legend {
-      height: 64px;              /* tightened */
+      height: 64px;             
       display: flex;
       align-items: center;
       gap: 12px;
@@ -187,7 +176,7 @@
       color: #111;
       margin-right: 6px;
       font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      line-height: 1.05;         /* reduced */
+      line-height: 1.05;        
       white-space: pre-wrap;
       text-align: center;
     }
@@ -199,11 +188,9 @@
       border: 1px solid rgba(0,0,0,0.06);
     }
 
-    /* embed area heights:
-       charts 400px plotting area, plus stack legend => consistent card total height */
     .chart-embed {
       width: 100%;
-      height: 400px;   /* slightly reduced to fit tighter card */
+      height: 400px;   
     }
 
     .controls { margin-bottom: 10px; display:flex; gap:10px; align-items:center; justify-content:center; }
@@ -211,48 +198,45 @@
     input[type="number"] { padding:6px 8px; font-size:15px; width:80px; font-family: "Inter", sans-serif; }
     button { padding:6px 10px; font-family: "Inter", sans-serif; }
 
-    /* make vega internals fill parent */
-    .card .vega-embed, .card svg, .card canvas, .card iframe {
-      width: 100% !important;
-      height: 100% !important;
-      display: block;
-    }
-
-    /* small metadata footer below the conclusion */
     .footer-meta {
-      color: #6b7280;              /* subtle grey */
+      color: #6b7280;             
       font-size: 14px;
       line-height: 1;
       text-align: center;
       max-width: 920px;
-      margin: 12px auto 40px;     /* space above & below */
+      margin: 12px auto 40px;     
       white-space: pre-wrap;
       font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       word-break: break-word;
     }
 
     .footer-meta a {
-      color: #6b7280;             /* keep links grey too */
+      color: #6b7280;             
       text-decoration: underline;
       text-underline-offset: 3px;
       font-weight: 500;
     }
 
-
-    /* small metadata footer below the conclusion */
     .footer-meta ol {
-      margin-top: 0px;      /* reduce top gap */
-      margin-bottom: 0;     /* remove bottom gap */
-      padding-left: 20px;   /* keep numbering slightly indented */
-      text-align: left;
-      display: inline-block;
+      margin: 4px 0 0 0;            
+      padding-left: 0;              
+      list-style-position: inside;  
+      text-align: center;           
+      display: inline-block;         
+      color: #6b7280;
     }
 
     .footer-meta li {
-      margin: 0px 0;        /* tighten vertical spacing between items */
+      margin: 2px 0;                
+      color: #6b7280;
     }
 
-    /* responsive adjustments */
+    .card .vega-embed, .card svg, .card canvas, .card iframe {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+
     @media (max-width: 1040px) {
       .map-container, .two-col-wrap { width: 100%; padding: 0 12px; box-sizing: border-box; }
       .col-half { width: 100%; }
@@ -269,34 +253,27 @@
 <body>
   <div class="page">
 
-    <!-- BIG TITLE -->
     <h1 class="main-title">FROM POLLUTION TO SOLUTION</h1>
 
-    <!-- Intro paragraph -->
     <p class="lead"><strong>Air pollution</strong> is a global health crisis — this page walks through the problem and highlights how <strong>renewable energy</strong> is part of the solution.</p>
 
-    <!-- short background before the world map -->
     <p class="paragraph">
       <strong>Background:</strong> Tiny particles in the air known as <strong>PM2.5</strong> travel deep into the lungs and bloodstream. Long-term exposure increases the risk of respiratory and cardiovascular illnesses, and contributes to premature deaths worldwide.
     </p>
 
-    <!-- World PM2.5 map -->
     <section class="section">
       <div class="section-title">Average PM2.5 (µg/m³) — World Map</div>
       <div class="map-container">
         <div class="card">
-          <!-- <h3>World PM2.5 Map</h3> -->
           <div id="pm25Vis" class="map-embed"></div>
         </div>
       </div>
     </section>
 
-    <!-- a short sentence about deaths -->
     <p class="paragraph">
       <strong>Health impact:</strong> High PM2.5 concentrations are strongly associated with increased mortality — even small increases in average exposure raise the number of premature deaths.
     </p>
 
-    <!-- Top10 + Deaths -->
     <section class="section">
       <div class="two-col-wrap">
         <div class="col-half">
@@ -308,19 +285,25 @@
 
         <div class="col-half">
           <div class="card">
-            <h3>Deaths from Air Pollution — World vs Malaysia</h3>
+            <h3>Average Deaths from Air Pollution</h3>
+
+            <div class="controls" style="justify-content:center;">
+              <label for="countrySelect">Compare World with:</label>
+              <select id="countrySelect" style="min-width:220px; padding:6px 8px; font-size:14px;">
+                <option>Loading countries…</option>
+              </select>
+            </div>
+
             <div id="vis-chart" class="chart-embed"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- paragraph about solutions -->
     <p class="paragraph">
       <strong>Solution direction:</strong> Transitioning energy systems away from fossil fuels and toward <strong>renewable sources</strong> (solar, wind, hydro, biomass, geothermal) reduces emissions and improves air quality — protecting health and the environment.
     </p>
 
-    <!-- Global renewables map -->
     <section class="section">
       <div class="section-title">Global Renewables (% Equivalent Primary Energy) — 2022</div>
       <div class="map-container">
@@ -330,7 +313,6 @@
       </div>
     </section>
 
-    <!-- Malaysia + stacked composition -->
     <section class="section">
       <div class="two-col-wrap">
         <div class="col-half">
@@ -351,7 +333,6 @@
           <div class="card">
             <h3>Global Renewable Energy Composition by Type </h3>
 
-            <!-- HTML legend just above the Vega embed -->
             <div id="stackLegend" class="stack-legend" aria-hidden="false"></div>
 
             <div id="stackVis" class="chart-embed"></div>
@@ -360,7 +341,6 @@
       </div>
     </section>
 
-    <!-- Conclusion -->
     <p class="paragraph" style="margin-top:12px;">
       <strong>Conclusion:</strong> Reducing air pollution requires both policy action and clean energy investment. The shift to renewables is a practical and effective path from <strong>pollution</strong> to a healthier, more sustainable <strong>future</strong>.
     </p>
@@ -368,92 +348,60 @@
     <div class="footer-meta" aria-label="Document metadata">
       <div><strong>Author:</strong> CHEN MING YANG</div>
       <div><strong>Publish Date:</strong> 18 October 2025</div>
-      <div style="margin-top:0px;"><strong>Dataset URL:</strong></div>
-      <div style="margin-top:0px; text-align:left; display:inline-block;">
-        <ol>
-          <li><a href="https://www.kaggle.com/datasets/anishvijay/global-renewable-energy-and-indicators-dataset" target="_blank" rel="noopener noreferrer">Kaggle — Global Renewable Energy and Indicators</a></li>
-          <li><a href="https://ourworldindata.org/renewable-energy" target="_blank" rel="noopener noreferrer">Our World in Data — Renewable Energy</a></li>
-          <li><a href="https://www.kaggle.com/datasets/hasibalmuzdadid/global-air-pollution-dataset" target="_blank" rel="noopener noreferrer">Kaggle — Global Air Pollution Dataset</a></li>
-          <li><a href="https://www.kaggle.com/datasets/pavan9065/air-pollution?select=death-rates-from-air-pollution.csv" target="_blank" rel="noopener noreferrer">Kaggle — Air Pollution (death rates)</a></li>
-        </ol>
-      </div>
+      <div><strong>Source URL:</strong></div>
+      <ol>
+        <li><a href="https://www.kaggle.com/datasets/anishvijay/global-renewable-energy-and-indicators-dataset" target="_blank" rel="noopener noreferrer">Kaggle — Global Renewable Energy and Indicators</a></li>
+        <li><a href="https://ourworldindata.org/renewable-energy" target="_blank" rel="noopener noreferrer">Our World in Data — Renewable Energy</a></li>
+        <li><a href="https://www.kaggle.com/datasets/hasibalmuzdadid/global-air-pollution-dataset" target="_blank" rel="noopener noreferrer">Kaggle — Global Air Pollution Dataset</a></li>
+        <li><a href="https://www.kaggle.com/datasets/pavan9065/air-pollution?select=death-rates-from-air-pollution.csv" target="_blank" rel="noopener noreferrer">Kaggle — Air Pollution (death rates)</a></li>
+      </ol>
     </div>
-
 
   </div>
 
   <script>
-    /**********************************************************************
-     * Enhanced splitTextIntoLines:
-     * - preserves ALL whitespace (leading/trailing + multiple spaces)
-     * - preserves inline elements (e.g. <strong>)
-     * - inserts <br> after `maxWords` words (counting only non-space tokens)
-     * - does not touch inputs, scripts, iframes, etc.
-     **********************************************************************/
     function splitTextIntoLines(rootEl, maxWords = 12) {
       if (!rootEl) return;
-
       const skipTags = new Set(['SCRIPT','STYLE','INPUT','TEXTAREA','SELECT','IFRAME','CANVAS','SVG']);
-
       function processNode(node, counterObj) {
         if (node.nodeType === Node.TEXT_NODE) {
           const raw = node.nodeValue;
           if (!raw) return;
-
-          // Match either a run of non-space characters (\S+) or a run of spaces (\s+)
           const tokens = raw.match(/(\S+|\s+)/g);
           if (!tokens) return;
-
           const frag = document.createDocumentFragment();
-
           for (let i = 0; i < tokens.length; i++) {
             const tok = tokens[i];
             const isWord = /\S/.test(tok);
-
-            // create a text node for this token (preserves token exactly, including spaces)
             frag.appendChild(document.createTextNode(tok));
-
             if (isWord) {
               counterObj.count++;
               if (counterObj.count >= maxWords) {
-                // After hitting the max, insert a <br> to force a new line
                 frag.appendChild(document.createElement('br'));
-                // reset count so next words start counting from 0
                 counterObj.count = 0;
               }
             }
           }
-
-          // replace original node with fragment
           node.parentNode.insertBefore(frag, node);
           node.parentNode.removeChild(node);
-
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           if (skipTags.has(node.tagName)) return;
-
-          // treat block-level elements as line/reset boundaries
           const display = window.getComputedStyle(node).display;
           const isBlock = display === 'block' || display === 'flex' || display === 'table' ||
                           node.tagName === 'P' || node.tagName === 'DIV' || node.tagName === 'SECTION' ||
                           node.tagName === 'H1' || node.tagName === 'H2' || node.tagName === 'H3' ||
                           node.tagName === 'LI';
-
-          // if block, reset counter for its children
           const childCounter = isBlock ? { count: 0 } : counterObj;
-
-          // Snapshot child nodes because we will mutate them
           const children = Array.from(node.childNodes);
           for (const cn of children) processNode(cn, childCounter);
         }
       }
-
       const initialCounter = { count: 0 };
       const children = Array.from(rootEl.childNodes);
       for (const c of children) processNode(c, initialCounter);
     }
 
     function applySplitting() {
-      // selectors we will process (safe list)
       const safeSelectors = [
         '.main-title',
         '.lead',
@@ -465,7 +413,6 @@
       ];
       safeSelectors.forEach(sel => {
         document.querySelectorAll(sel).forEach(el => {
-          // run only if element has text nodes to avoid reprocessing multiple times
           splitTextIntoLines(el, 12);
         });
       });
@@ -473,14 +420,12 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       applySplitting();
-      // run again after a short delay to catch any late-rendered text
       setTimeout(applySplitting, 500);
     });
 
   </script>
 
   <script>
-    // colors & labels for the stacked legend (must match the Vega color scale)
     const stackLegendItems = [
       { key: "Biomass",    color: "#7b9acc" },
       { key: "Geothermal", color: "#f2b880" },
@@ -489,9 +434,7 @@
       { key: "Wind",       color: "#8cc6d7" }
     ];
 
-    // build HTML legend above the stacked bar
     const legendContainer = document.getElementById('stackLegend');
-    // clear any existing legend content (prevents duplicates if script re-runs)
     if (legendContainer) legendContainer.innerHTML = '';
     stackLegendItems.forEach(item => {
       const it = document.createElement('div');
@@ -506,11 +449,9 @@
       if (legendContainer) legendContainer.appendChild(it);
     });
 
-    // padding values used to ensure axes/legend not clipped. Smaller charts use 'smallPadding'
     const mapPadding = { left: 30, right: 120, top: 20, bottom: 60 };
     const smallPadding = { left: 60, right: 20, top: 20, bottom: 40 };
 
-    /* PM2.5 world map */
     const pm25Spec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "autosize": {"type":"fit","contains":"padding"},
@@ -559,7 +500,6 @@
       ]
     };
 
-    /* Top10 bar (left lower row) */
     const pm25BarSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "autosize": {"type":"fit","contains":"padding"},
@@ -596,15 +536,20 @@
       }
     };
 
-    /* Deaths line (right lower row) */
     const deathsSpec = {
       "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
       "autosize": {"type":"fit","contains":"padding"},
       "padding": smallPadding,
       "width": 510,
       "height": 360,
-      "data": {"url":"deaths_airpollution_world_malaysia.csv","format":{"type":"csv"}},
-      "transform":[{"calculate":"toString(datum.Year)","as":"Year_str"}],
+      "params": [
+        {"name":"selectedCountry","value":"Malaysia"} 
+      ],
+      "data": {"url":"deaths_airpollution_all_entities.csv","format":{"type":"csv"}},
+      "transform":[
+        {"calculate":"toString(datum.Year)","as":"Year_str"},
+        {"filter":"datum.Entity == 'World' || datum.Entity == selectedCountry"}
+      ],
       "layer":[
         {"mark":{"type":"line","interpolate":"monotone"},
          "encoding":{
@@ -630,7 +575,6 @@
       "config":{"legend":{"orient":"top"}}
     };
 
-    /* Global renewables map */
     const mapSpec = {
       "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
       "autosize": {"type":"fit","contains":"padding"},
@@ -667,7 +611,6 @@
             "text": { "field": "note" }
           }
         },
-        /* Annotation line connector */
         {
           "data": {
             "values": [
@@ -694,7 +637,6 @@
       ]
     };
 
-    /* Malaysia line (left of Malaysia row) */
     const lineSpec = {
       "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
       "autosize": {"type":"fit","contains":"padding"},
@@ -712,7 +654,6 @@
       }
     };
 
-    /* Global energy composition stacked bar */
     const stackSpec = {
       "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
       "autosize": {"type":"fit","contains":"padding"},
@@ -732,7 +673,7 @@
             "domain": ["Biomass","Geothermal","Hydro","Solar","Wind"],
             "range": ["#7b9acc", "#f2b880", "#b28fd6", "#ffe999", "#8cc6d7"]
           },
-          "legend": null   // disable built-in legend so plot area stays full height
+          "legend": null  
         }
       },
       "config": {
@@ -740,12 +681,9 @@
       }
     };
 
-    // embed charts
     vegaEmbed("#pm25Vis", pm25Spec, {mode:"vega-lite", actions:false}).catch(console.warn);
     vegaEmbed("#pm25Bar", pm25BarSpec, {mode:"vega-lite", actions:false}).catch(console.warn);
-    vegaEmbed("#vis-chart", deathsSpec, {mode:"vega-lite", actions:false}).catch(console.warn);
     vegaEmbed("#mapVis", mapSpec, {mode:"vega-lite", actions:false}).catch(console.warn);
-
     vegaEmbed("#lineVis", lineSpec, {mode:"vega-lite", actions:false}).then(result=>{
       const view = result.view;
       const s = document.getElementById("startYear");
@@ -763,10 +701,73 @@
         s.addEventListener("change", updateYears);
         e.addEventListener("change", updateYears);
         reset.addEventListener("click", ()=>{ s.value=1965; e.value=2024; updateYears(); });
-        // initialize
         view.signal("startYear", parseInt(s.value,10)).signal("endYear", parseInt(e.value,10)).run();
       }
     }).catch(console.warn);
+
+    (async function(){
+      const select = document.getElementById("countrySelect");
+      const csvUrl = "deaths_airpollution_all_entities.csv";
+
+      try {
+        const resp = await fetch(csvUrl);
+        if (!resp.ok) throw new Error("Failed to fetch CSV: " + resp.status);
+        const text = await resp.text();
+
+        const lines = text.split(/\r?\n/).filter(Boolean);
+        if (lines.length < 2) throw new Error("CSV seems empty or only header");
+
+        const header = lines[0].split(',');
+        const entityIdx = header.findIndex(h => h.trim().toLowerCase() === 'entity');
+        if (entityIdx === -1) throw new Error("No 'Entity' column found in CSV header");
+
+        const entitiesSet = new Set();
+        for (let i = 1; i < lines.length; i++) {
+          const row = lines[i].split(',');
+          const ent = row[entityIdx] ? row[entityIdx].trim() : "";
+          if (ent) entitiesSet.add(ent);
+        }
+
+        const entities = Array.from(entitiesSet).sort((a,b)=> a.localeCompare(b));
+
+        select.innerHTML = "";
+        entities.forEach(name => {
+          const opt = document.createElement("option");
+          opt.value = name;
+          opt.textContent = name;
+          select.appendChild(opt);
+        });
+
+        let defaultCountry = "Malaysia";
+        if (!entities.includes(defaultCountry)) defaultCountry = entities[0] || "";
+
+        const embedRes = await vegaEmbed("#vis-chart", deathsSpec, {mode:"vega-lite", actions:false});
+        const view = embedRes.view;
+
+        if (defaultCountry) {
+          select.value = defaultCountry;
+          try { view.signal("selectedCountry", defaultCountry).run(); } catch(e){ console.warn(e); }
+        }
+
+        select.addEventListener("change", (ev)=>{
+          const val = ev.target.value;
+          try {
+            view.signal("selectedCountry", val).run();
+          } catch(err){
+            console.warn("Failed to update selectedCountry signal:", err);
+          }
+        });
+
+        setTimeout(()=> {
+          try { view.run(); } catch(e){/* ignore */ }
+        }, 200);
+
+      } catch (err) {
+        console.error("Could not populate country selector or embed deaths chart:", err);
+        select.innerHTML = "<option>Error loading countries</option>";
+        vegaEmbed("#vis-chart", deathsSpec, {mode:"vega-lite", actions:false}).catch(console.warn);
+      }
+    })();
 
     vegaEmbed("#stackVis", stackSpec, {mode:"vega-lite", actions:false}).catch(console.warn);
   </script>
